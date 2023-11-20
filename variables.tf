@@ -1,3 +1,5 @@
+## App Registration for Terraform Cloud
+
 variable "client_id" {
   type = string
 }

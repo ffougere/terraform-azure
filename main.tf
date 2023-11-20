@@ -1,10 +1,10 @@
 # Configure Azure Provider
 terraform {
   required_providers {
-     azurerm = {
-      source = "hashicorp/azurerm"
+    azurerm = {
+      source  = "hashicorp/azurerm"
       version = ">= 3.59.0"
-    } 
+    }
   }
   required_version = ">= 0.14.9"
 }
@@ -14,11 +14,11 @@ provider "azurerm" {
 
   skip_provider_registration = "true"
 
-   # Connection to Azure
+  # Connection to Azure
   subscription_id = var.subscription_id
-  client_id = var.client_id
-  client_secret = var.client_secret
-  tenant_id = var.tenant_id
+  client_id       = var.client_id
+  client_secret   = var.client_secret
+  tenant_id       = var.tenant_id
 
 }
 
@@ -57,6 +57,7 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+
 resource "azurerm_virtual_machine" "vm" {
   name                  = "${var.prefix}-vm"
   location              = azurerm_resource_group.rg.location
@@ -88,3 +89,45 @@ resource "azurerm_virtual_machine" "vm" {
     environment = "staging"
   }
 }
+
+# Create Azure Storage Account required for Function App
+resource "azurerm_storage_account" "sa" {
+  name                     = "application"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_service_plan" "service_plan" {
+  name                = "applicationplan1"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  os_type             = "Linux"
+  sku_name            = "F1" # Free tier # "P1v2"
+
+  #  sku {
+  #    tier = "Dynamic"
+  #    size = "Y1"
+  #  }
+}
+
+# Create an Azure Function App on Linux
+resource "azurerm_linux_function_app" "primary" {
+  name                = "functionapp1"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+
+  service_plan_id = azurerm_service_plan.service_plan.id
+
+  storage_account_name       = azurerm_storage_account.sa.name
+  storage_account_access_key = azurerm_storage_account.sa.primary_access_key
+
+  functions_extension_version = "~4"
+
+  site_config {
+    always_on = true
+  }
+}
+
+
