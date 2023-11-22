@@ -1,3 +1,7 @@
+#######################################################
+# https://dev.to/this-is-learning/deploy-azure-infrastructure-using-terraform-cloud-3j9d
+# https://github.com/aniketkumarsinha/azure-terraform-infrastructure
+#######################################################
 # Configure Azure Provider
 terraform {
   required_providers {
