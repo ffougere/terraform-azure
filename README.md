@@ -3,6 +3,9 @@ Tutorial : https://github.com/aniketkumarsinha/azure-terraform-infrastructure <b
 Github - Repo : https://github.com/ffougere/terraform-azure <br>
 Terraform Cloud : https://app.terraform.io/app/itblast/workspaces/terraform-azure/runs/run-m81ZgWNe9teM7AGw <br>
 
+# azure regions
+az login az account list-locations -o table az account list-locations -o table | grep canada az account list-locations -o table | grep (US)
+
 # manage LFS issue
 Providers are using file > 100 Mb (250 for azurerm) so we need to use git LFS
 
